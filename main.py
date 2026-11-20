@@ -1,9 +1,14 @@
 
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pandas as pd
 import joblib
-from fastapi.middleware.cors import CORSMiddleware
+
+BASE_DIR = Path(__file__).resolve().parent
+FRONTEND_DIR = BASE_DIR / "FRONTEND"
 
 app = FastAPI(title="Agricultural Yield Prediction API")
 
@@ -14,12 +19,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 # Load model and columns
-model = joblib.load("agricultural_yield_model.pkl")
-model_columns = joblib.load("model_columns.pkl")
+model = joblib.load(BASE_DIR / "agricultural_yield_model.pkl")
+model_columns = joblib.load(BASE_DIR / "model_columns.pkl")
 
 
-# Only required user inputs
+# User input features
 class PredictionInput(BaseModel):
     year: int
     temp_max: float
@@ -34,11 +40,13 @@ class PredictionInput(BaseModel):
     country: str
 
 
-@app.get("/")
-def home():
+@app.get("/health")
+def health_check():
     return {
+        "status": "healthy",
         "message": "Agricultural Yield Prediction API is running"
     }
+
 
 @app.get("/options")
 def get_options():
@@ -49,7 +57,6 @@ def get_options():
         if col.startswith("crop_")
     ]
 
-    # Clean country dropdown while preserving original model categories
     country_mapping = {
         "Australia": "Australia",
         "Brazil": "Brazil",
@@ -88,6 +95,8 @@ def get_options():
         "crops": crops,
         "countries": countries
     }
+
+
 @app.post("/predict")
 def predict_yield(data: PredictionInput):
 
@@ -104,8 +113,9 @@ def predict_yield(data: PredictionInput):
             columns=model_columns
         )
 
-        # Fill user-provided numerical values
+        # Fill numerical input values
         for col, value in input_data.items():
+
             if col not in model_columns:
                 raise HTTPException(
                     status_code=400,
@@ -117,19 +127,29 @@ def predict_yield(data: PredictionInput):
         # Crop encoding
         crop_column = "crop_" + crop
 
-        if crop_column in model_columns:
-            final_input[crop_column] = 1
+        if crop_column not in model_columns:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid crop selected"
+            )
+
+        final_input[crop_column] = 1
 
         # Country encoding
         country_column = "country_" + country
 
-        if country_column in model_columns:
-            final_input[country_column] = 1
+        if country_column not in model_columns:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid country selected"
+            )
+
+        final_input[country_column] = 1
 
         # Maintain training feature order
         final_input = final_input[model_columns]
 
-        # Prediction
+        # Generate prediction
         prediction = model.predict(final_input)[0]
 
         return {
@@ -148,3 +168,14 @@ def predict_yield(data: PredictionInput):
             status_code=500,
             detail=str(e)
         )
+
+
+# Serve frontend
+app.mount(
+    "/",
+    StaticFiles(
+        directory=str(FRONTEND_DIR),
+        html=True
+    ),
+    name="frontend"
+)

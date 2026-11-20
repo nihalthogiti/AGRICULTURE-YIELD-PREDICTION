@@ -1,5 +1,16 @@
 
-const API_URL = "http://127.0.0.1:8000";
+// Automatically detect local or deployed environment
+const isLocalFrontend =
+    location.protocol === "file:" ||
+    (
+        ["localhost", "127.0.0.1"].includes(location.hostname) &&
+        location.port !== "8000"
+    );
+
+const API_URL = isLocalFrontend
+    ? "http://127.0.0.1:8000"
+    : "";
+
 
 const form = document.getElementById("predictionForm");
 const cropSelect = document.getElementById("crop");
@@ -14,19 +25,15 @@ const resultPlaceholder =
 const resultData = document.getElementById("resultData");
 
 
-// Format raw model feature names for display.
-// Keep the original value unchanged for the API.
+// Format raw model feature names for display
 function formatLabel(value) {
-    return value
-        .replace(/\b\w/g, char => char.toUpperCase());
+    return value.replace(/\b\w/g, char => char.toUpperCase());
 }
 
 
 // Load supported crops and countries from FastAPI
 async function loadOptions() {
-
     try {
-
         const response = await fetch(`${API_URL}/options`);
 
         if (!response.ok) {
@@ -42,29 +49,26 @@ async function loadOptions() {
             '<option value="">Select Country</option>';
 
         data.crops.forEach(crop => {
-
             const option = document.createElement("option");
 
             option.value = crop;
             option.textContent = formatLabel(crop);
 
             cropSelect.appendChild(option);
-
         });
 
+        data.countries.forEach(country => {
+            const option = document.createElement("option");
 
-       data.countries.forEach(country => {
+            option.value = country.value;
+            option.textContent = country.label;
 
-    const option = document.createElement("option");
+            countrySelect.appendChild(option);
+        });
 
-    option.value = country.value;
-    option.textContent = country.label;
+        formError.textContent = "";
 
-    countrySelect.appendChild(option);
-
-});
     } catch (error) {
-
         cropSelect.innerHTML =
             '<option value="">Unable to load crops</option>';
 
@@ -72,25 +76,21 @@ async function loadOptions() {
             '<option value="">Unable to load countries</option>';
 
         formError.textContent =
-            "Cannot connect to the backend. Start your FastAPI server.";
+            "Cannot connect to the backend. Please check whether the server is running.";
 
-        console.error(error);
-
+        console.error("Options loading error:", error);
     }
 }
 
 
 // Collect numerical input
 function getNumber(id) {
-
     return Number(document.getElementById(id).value);
-
 }
 
 
 // Display prediction result
 function displayResult(data) {
-
     resultPlaceholder.hidden = true;
     resultData.hidden = false;
 
@@ -111,13 +111,11 @@ function displayResult(data) {
         behavior: "smooth",
         block: "center"
     });
-
 }
 
 
 // Form submission
 form.addEventListener("submit", async function(event) {
-
     event.preventDefault();
 
     formError.textContent = "";
@@ -126,38 +124,23 @@ form.addEventListener("submit", async function(event) {
     const tempMin = getNumber("temp_min");
 
     if (tempMin > tempMax) {
-
         formError.textContent =
             "Minimum temperature cannot exceed maximum temperature.";
-
         return;
-
     }
 
     const payload = {
-
         year: getNumber("year"),
-
         temp_max: tempMax,
-
         temp_min: tempMin,
-
         humidity: getNumber("humidity"),
-
         soil_root: getNumber("soil_root"),
-
         soil_top: getNumber("soil_top"),
-
         precip_mm: getNumber("precip_mm"),
-
         rainfall: getNumber("rainfall"),
-
         temp_range: getNumber("temp_range"),
-
         crop: cropSelect.value,
-
         country: countrySelect.value
-
     };
 
 
@@ -171,70 +154,51 @@ form.addEventListener("submit", async function(event) {
 
 
     try {
-
         const response = await fetch(`${API_URL}/predict`, {
-
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json"
             },
-
             body: JSON.stringify(payload)
-
         });
-
 
         const data = await response.json();
 
-
         if (!response.ok) {
-
             throw new Error(
                 data.detail || "Prediction failed."
             );
-
         }
 
-
-        // Show prediction
+        // Display prediction
         displayResult(data);
 
-
     } catch (error) {
-
         formError.textContent =
             error.message || "Something went wrong.";
 
         console.error("Prediction error:", error);
 
     } finally {
-
         predictButton.disabled = false;
 
         predictButton.innerHTML = `
             <span>Predict Crop Yield</span>
             <span>→</span>
         `;
-
     }
-
 });
 
 
 // Reset result when form is reset
 form.addEventListener("reset", function() {
-
     setTimeout(() => {
-
         formError.textContent = "";
 
         resultData.hidden = true;
-
         resultPlaceholder.hidden = false;
 
     }, 0);
-
 });
 
 
