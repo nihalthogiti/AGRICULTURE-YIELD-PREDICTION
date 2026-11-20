@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriPredict | Crop Yield Prediction</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">A</div>
+            <div>
+                <h2>AgriPredict</h2>
+                <span>SMART AGRICULTURE</span>
+            </div>
+        </div>
+
+        <div class="nav-label">MENU</div>
+
+        <nav>
+            <a href="#" class="nav-item active">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="#prediction" class="nav-item">
+                <span>◈</span> Yield Prediction
+            </a>
+
+            <a href="#result" class="nav-item">
+                <span>▤</span> Results
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="sidebar-note">
+                <div class="note-icon">✦</div>
+                <h3>Smart Farming</h3>
+                <p>Data-driven insights for better agricultural decisions.</p>
+            </div>
+            <p class="version">AgriPredict v1.0</p>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">Workspace / Dashboard</p>
+                <h2>Dashboard</h2>
+            </div>
+
+            <div class="profile">
+                <div class="profile-avatar">AP</div>
+                <div>
+                    <strong>Administrator</strong>
+                    <span>ML Prediction System</span>
+                </div>
+            </div>
+        </header>
+
+
+        <!-- Hero -->
+        <section class="hero">
+
+            <div class="hero-content">
+                <span class="hero-tag">AGRICULTURAL INTELLIGENCE</span>
+
+                <h1>Predict Better.<br>
+                    <span>Grow Smarter.</span>
+                </h1>
+
+                <p>
+                    Harness machine learning to estimate agricultural
+                    crop yield using climate, soil and environmental data.
+                </p>
+
+                <a href="#prediction" class="hero-button">
+                    Start Prediction →
+                </a>
+            </div>
+
+            <div class="hero-decoration">
+                <div class="circle circle-one"></div>
+                <div class="circle circle-two"></div>
+                <div class="hero-leaf">✦</div>
+            </div>
+
+        </section>
+
+
+        <!-- Information Cards -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon green">✦</div>
+                <div>
+                    <span>Prediction Engine</span>
+                    <h3>Random Forest</h3>
+                    <small>Regression Model</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon blue">◈</div>
+                <div>
+                    <span>Input Parameters</span>
+                    <h3>11 Features</h3>
+                    <small>Environmental and crop data</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange">◎</div>
+                <div>
+                    <span>Prediction Unit</span>
+                    <h3>KG / Hectare</h3>
+                    <small>Agricultural yield</small>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Prediction Form -->
+        <section class="prediction-section" id="prediction">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-tag">MACHINE LEARNING</span>
+                    <h2>Crop Yield Prediction</h2>
+                    <p>Enter the required agricultural parameters below.</p>
+                </div>
+
+                <span class="form-status">● Ready to predict</span>
+            </div>
+
+
+            <form id="predictionForm">
+
+                <!-- Crop Information -->
+                <div class="form-group-container">
+
+                    <div class="group-heading">
+                        <div class="group-icon">01</div>
+                        <div>
+                            <h3>Crop Information</h3>
+                            <p>Select the crop and geographical location.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label for="crop">Crop Type</label>
+                            <select id="crop" required>
+                                <option value="">Loading crops...</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="country">Country</label>
+                            <select id="country" required>
+                                <option value="">Loading countries...</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label for="year">Year</label>
+                            <input type="number" id="year"
+                                   min="1900" max="2100"
+                                   value="2026" required>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Weather -->
+                <div class="form-group-container">
+
+                    <div class="group-heading">
+                        <div class="group-icon">02</div>
+                        <div>
+                            <h3>Weather Parameters</h3>
+                            <p>Provide the climatic conditions.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label for="temp_max">Maximum Temperature</label>
+                            <div class="input-unit">
+                                <input type="number" id="temp_max"
+                                       step="any" required placeholder="e.g. 35">
+                                <span>°C</span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="temp_min">Minimum Temperature</label>
+                            <div class="input-unit">
+                                <input type="number" id="temp_min"
+                                       step="any" required placeholder="e.g. 22">
+                                <span>°C</span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="humidity">Humidity</label>
+                            <div class="input-unit">
+                                <input type="number" id="humidity"
+                                       step="any" required placeholder="e.g. 65">
+                                <span>%</span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="rainfall">Rainfall</label>
+                            <div class="input-unit">
+                                <input type="number" id="rainfall"
+                                       min="0" step="any" required placeholder="e.g. 800">
+                                <span>mm</span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="precip_mm">Precipitation</label>
+                            <div class="input-unit">
+                                <input type="number" id="precip_mm"
+                                       step="any" required placeholder="e.g. 750">
+                                <span>mm</span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="temp_range">Temperature Range</label>
+                            <div class="input-unit">
+                                <input type="number" id="temp_range"
+                                       step="any" required placeholder="e.g. 40">
+                                <span>°C</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Soil -->
+                <div class="form-group-container">
+
+                    <div class="group-heading">
+                        <div class="group-icon">03</div>
+                        <div>
+                            <h3>Soil Parameters</h3>
+                            <p>Enter soil measurements used by the model.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label for="soil_root">Root Zone Soil Moisture</label>
+                            <input type="number" id="soil_root"
+                                   step="any" required placeholder="Enter value">
+                        </div>
+
+                        <div class="field">
+                            <label for="soil_top">Top Soil Moisture</label>
+                            <input type="number" id="soil_top"
+                                   step="any" required placeholder="Enter value">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="form-actions">
+
+                    <button type="reset" class="reset-button">
+                        Reset Fields
+                    </button>
+
+                    <button type="submit" class="predict-button" id="predictButton">
+                        <span>Predict Crop Yield</span>
+                        <span>→</span>
+                    </button>
+
+                </div>
+
+                <p class="form-error" id="formError" role="alert"></p>
+
+            </form>
+
+        </section>
+
+
+        <!-- Result -->
+        <section class="result-section" id="result">
+
+            <div class="result-header">
+                <div>
+                    <span class="section-tag">MODEL OUTPUT</span>
+                    <h2>Prediction Results</h2>
+                    <p>Your estimated agricultural yield will appear here.</p>
+                </div>
+
+                <div class="result-icon">✦</div>
+            </div>
+
+            <div class="result-card" id="resultCard">
+
+                <div class="result-placeholder" id="resultPlaceholder">
+                    <div class="placeholder-icon">▤</div>
+                    <h3>No prediction available</h3>
+                    <p>Complete the form and click Predict Crop Yield.</p>
+                </div>
+
+                <div class="result-data" id="resultData" hidden>
+
+                    <span class="result-label">PREDICTED CROP YIELD</span>
+
+                    <div class="yield-value">
+                        <h1 id="yieldValue">0.00</h1>
+                        <span>kg/ha</span>
+                    </div>
+
+                    <div class="result-details">
+                        <div>
+                            <span>Crop</span>
+                            <strong id="resultCrop">-</strong>
+                        </div>
+
+                        <div>
+                            <span>Country</span>
+                            <strong id="resultCountry">-</strong>
+                        </div>
+                    </div>
+
+                    <div class="success-message">
+                        Prediction generated successfully.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            <p>© 2026 AgriPredict. Agricultural Intelligence System.</p>
+            <p>Powered by Machine Learning</p>
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
